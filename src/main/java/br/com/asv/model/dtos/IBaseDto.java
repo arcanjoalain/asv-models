@@ -7,4 +7,6 @@ public interface IBaseDto {
 	Long getPid();
 	
 	IBaseEntity toModel();
+	
+	IBaseEntity toModel(Boolean isFull);
 }

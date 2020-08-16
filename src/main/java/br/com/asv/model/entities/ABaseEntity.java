@@ -16,6 +16,7 @@ import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
+import br.com.asv.model.dtos.IBaseDto;
 import br.com.asv.model.enums.StatusEntityEnum;
 import lombok.Data;
 
@@ -73,5 +74,9 @@ public abstract class ABaseEntity implements IBaseEntity, Serializable{
 
 	@Override
 	public void postLoad() {
+	}
+	
+	public IBaseDto toDTO() {
+		return toDTO(true);
 	}
 }

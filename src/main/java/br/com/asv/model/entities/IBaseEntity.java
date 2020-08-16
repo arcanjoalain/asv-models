@@ -41,5 +41,7 @@ public interface IBaseEntity {
 	void preUpdate();
 	
 	IBaseDto toDTO();
+	
+	IBaseDto toDTO(Boolean isFull);
 
 }
