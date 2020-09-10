@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<
     @Getter(AccessLevel.PROTECTED)
     private 	final	String		className;
 
+    @Autowired
     @SuppressWarnings("unchecked")
 	public ABaseDao(R repository) {
         this.repository = repository;
