@@ -4,17 +4,26 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostRemove;
+import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import br.com.asv.model.dtos.IBaseDto;
 import br.com.asv.model.enums.StatusEntityEnum;
@@ -22,15 +31,25 @@ import lombok.Data;
 
 @Data
 @MappedSuperclass
-public abstract class ABaseEntity implements IBaseEntity, Serializable{
+@EntityListeners(AuditingEntityListener.class)
+public abstract class ABaseEntity implements IBaseEntity, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7029980376136936378L;
+
+	public ABaseEntity() {
+		super();
+	}
+
+	public ABaseEntity(IBaseDto dto) {
+		super();
+		id = dto.getPid();
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_GENERATOR")
 	@Column(name = "id", updatable = false)
 	protected Long id;
-	
+
 	@Column
 	@Enumerated(EnumType.ORDINAL)
 	protected StatusEntityEnum statusEntity = StatusEntityEnum.ENABLED;
@@ -39,43 +58,40 @@ public abstract class ABaseEntity implements IBaseEntity, Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	protected Date dateAt;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	protected Date lastModifiedAt;
-
 	@CreatedBy
 	@Column(name = "create_user_id")
 	protected Long createUserID;
+
 	
-	@Override
+	@PrePersist
 	public void prePersist() {
-		setDateAt(new Date());
 	}
-	
-	@Override
-	public void preUpdate(){
-		setLastModifiedAt(new Date());
+
+	@PreUpdate
+	public void preUpdate() {
 	}
-	
-	@Override
+
+	@PreRemove
 	public void preRemove() {
 	}
 
-	@Override
-	public void postPersist() {		
+	@PostPersist
+	public void postPersist() {
+
 	}
 
-	@Override
+	@PostUpdate
 	public void postUpdate() {
 	}
 
-	@Override
+	@PostRemove
 	public void postRemove() {
 	}
 
-	@Override
+	@PostLoad
 	public void postLoad() {
 	}
-	
+
 	public IBaseDto toDTO() {
 		return toDTO(true);
 	}

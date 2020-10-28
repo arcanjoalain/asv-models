@@ -5,12 +5,15 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import br.com.asv.model.entities.IBaseEntity;
+import br.com.asv.model.entities.history.IBaseHistoryListEntity;
 import br.com.asv.model.enums.StatusEntityEnum;
 import br.com.asv.model.exceptions.ObjectNotFoundException;
 import br.com.asv.model.exceptions.ServiceException;
@@ -68,6 +71,7 @@ public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<
     }
 
     @Override
+    @Transactional
     public E save(E entity) {
         entity = beforeSave(entity);
         entity = getRepository().save(entity);
@@ -85,16 +89,26 @@ public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<
     }
 
 	@Override
+	@Transactional
     public E update(E entity) {
         if (entity.getId() == null)
             throw new ServiceException(getClassName() + ".id.missing");
 
         entity = beforeUpdate(entity);
-        
-        return getRepository().save(entity);
+        entity = getRepository().save(entity);
+        entity = afterUpdate(entity);
+        return entity;
     }
 
-    protected E beforeUpdate(E entity) {
+    @SuppressWarnings("rawtypes")
+	protected E beforeUpdate(E entity) {
+    	if(entity instanceof IBaseHistoryListEntity) {
+			((IBaseHistoryListEntity)entity).processHistories();
+		}
+    	return entity;
+    }
+    
+    protected E afterUpdate(E entity) {
     	return entity;
     }
 
