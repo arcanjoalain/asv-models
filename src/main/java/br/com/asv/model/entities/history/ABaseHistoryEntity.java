@@ -27,25 +27,12 @@ public abstract class ABaseHistoryEntity extends ABaseEntity implements IBaseHis
 	
 	@LastModifiedDate
 	@Temporal(TemporalType.TIMESTAMP)
-	protected Date lastModifiedAt;
+	@Column(name = "updated_at")
+	protected Date updatedAt;
 	
 	@LastModifiedBy
-	@Column(name = "modifield_user_id")
-	protected Long modifieldUserID;
+	@Column(name = "updated_user_id")
+	protected Long updatedUserID;
 
-	@Override
-	public void prePersist() {
-		super.prePersist();
-//		String strTemp = getGson().toJson(this.toDTO());
-//		getHistoryEntity().add(strTemp);
-	}
-
-	@Override
-	public void preUpdate() {
-		super.preUpdate();
-//		setLastModifiedAt(new Date());
-//		String strTemp = getGson().toJson(this.toDTO());
-//		getHistoryEntity().add(strTemp);
-	}
 
 }

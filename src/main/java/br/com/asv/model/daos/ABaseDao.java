@@ -22,6 +22,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 
 public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<E>> implements IBaseDao<E>{
+	
+	protected String strIdMissing= ".id.missing";
+	protected String strNotFound= ".not.found";
 
 	@Getter(AccessLevel.PROTECTED)
     private		final	R			repository;
@@ -39,10 +42,10 @@ public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<
     @Override
     public E findOne(Long id) {
         if (id == null)
-            throw new ServiceException(getClassName() + ".id.missing");
+            throw new ServiceException(getClassName() + strIdMissing);
 
         return getRepository().findById(id)
-        		.orElseThrow(() -> new ObjectNotFoundException(getClassName() + ".not.found"));
+        		.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
     }
 
     @Override
@@ -75,8 +78,7 @@ public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<
     public E save(E entity) {
         entity = beforeSave(entity);
         entity = getRepository().save(entity);
-        entity = afterSave(entity);
-        return entity;
+        return afterSave(entity);
 
     }
 
@@ -92,7 +94,7 @@ public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<
 	@Transactional
     public E update(E entity) {
         if (entity.getId() == null)
-            throw new ServiceException(getClassName() + ".id.missing");
+            throw new ServiceException(getClassName() + strIdMissing);
 
         entity = beforeUpdate(entity);
         entity = getRepository().save(entity);
@@ -120,9 +122,9 @@ public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<
     @Override
     public void delete(Long id) {
         if (id == null)
-            throw new ServiceException(getClassName() + ".id.missing");
+            throw new ServiceException(getClassName() + strIdMissing);
 
-        E entity = getRepository().findById(id).orElseThrow(() -> new ObjectNotFoundException(getClassName() + ".not.found"));
+        E entity = getRepository().findById(id).orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
         entity.setStatusEntity(StatusEntityEnum.DISABLED);
         getRepository().save(entity);
     }
@@ -130,9 +132,9 @@ public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<
     @Override
     public void recovery(Long id) {
         if (id == null)
-            throw new ServiceException(getClassName() + ".id.missing");
+            throw new ServiceException(getClassName() + strIdMissing);
 
-        E entity = getRepository().findById(id).orElseThrow(() -> new ObjectNotFoundException(getClassName() + ".not.found"));
+        E entity = getRepository().findById(id).orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
         entity.setStatusEntity(StatusEntityEnum.ENABLED);
         getRepository().save(entity);
     }

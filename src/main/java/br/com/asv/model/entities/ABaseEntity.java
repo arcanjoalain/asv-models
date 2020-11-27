@@ -50,13 +50,14 @@ public abstract class ABaseEntity implements IBaseEntity, Serializable {
 	@Column(name = "id", updatable = false)
 	protected Long id;
 
-	@Column
 	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "status_entity")
 	protected StatusEntityEnum statusEntity = StatusEntityEnum.ENABLED;
 
 	@CreatedDate
+	@Column(name = "created_at")
 	@Temporal(TemporalType.TIMESTAMP)
-	protected Date dateAt;
+	protected Date createdAt;
 
 	@CreatedBy
 	@Column(name = "create_user_id")

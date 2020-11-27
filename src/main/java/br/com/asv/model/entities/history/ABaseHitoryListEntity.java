@@ -1,5 +1,6 @@
 package br.com.asv.model.entities.history;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,14 +22,14 @@ import lombok.EqualsAndHashCode;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class ABaseHitoryListEntity<H extends IHistoryEntity<?>> 
-	extends ABaseHistoryEntity implements IBaseHistoryListEntity<H>{
+	extends ABaseHistoryEntity implements IBaseHistoryListEntity<H>, Serializable{
 
 	private static final long serialVersionUID = 7031380664490280386L;
 	
     @Lob
 	@ElementCollection
     @OneToMany(mappedBy = "entity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-	private List<H> histories = new LinkedList<>();	
+	protected List<H> histories = new LinkedList<>();	
 	
 	
 	@Override
