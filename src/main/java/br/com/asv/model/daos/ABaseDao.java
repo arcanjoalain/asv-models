@@ -8,9 +8,12 @@ import java.util.stream.StreamSupport;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import br.com.asv.model.entities.IBaseEntity;
 import br.com.asv.model.entities.history.IBaseHistoryListEntity;
@@ -19,8 +22,12 @@ import br.com.asv.model.exceptions.ObjectNotFoundException;
 import br.com.asv.model.exceptions.ServiceException;
 import br.com.asv.model.repositories.IBaseRepository;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 
+@Data
+@Service
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public abstract class ABaseDao<E extends IBaseEntity, R extends IBaseRepository<E>> implements IBaseDao<E>{
 	
 	protected String strIdMissing= ".id.missing";
