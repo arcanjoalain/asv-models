@@ -13,26 +13,29 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import br.com.asv.model.entities.ABaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class ABaseHistoryEntity extends ABaseEntity implements IBaseHistoryEntity{
+public abstract class ABaseHistoryEntity<I> extends ABaseEntity<I> implements IBaseHistoryEntity<I>{
 
-	private static final long serialVersionUID = -311214553060483138L;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 307432774643252223L;
+
 	@LastModifiedDate
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updated_at")
-	protected Date updatedAt;
+	private Date updatedAt;
 	
 	@LastModifiedBy
 	@Column(name = "updated_user_id")
-	protected Long updatedUserID;
+	private Long updatedUserID;
 
 
 }

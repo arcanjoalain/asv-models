@@ -16,7 +16,7 @@ import br.com.asv.model.enums.StatusEntityEnum;
 
 @Transactional
 @NoRepositoryBean
-public interface IBaseRepository<E extends IBaseEntity> extends JpaRepository<E, Long>, JpaSpecificationExecutor<E>{
+public interface IBaseRepository<E extends IBaseEntity<I>,I> extends JpaRepository<E, I>, JpaSpecificationExecutor<E>{
 
 	Collection<E> findAllByStatusEntityOrderById(StatusEntityEnum statusEntity);
 

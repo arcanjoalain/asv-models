@@ -9,29 +9,37 @@ import javax.persistence.MappedSuperclass;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.google.gson.Gson;
-
 import br.com.asv.model.entities.ABaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import br.com.asv.model.parse.IParseHistoryEntity;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AHistoryEntity<E extends IBaseHistoryListEntity<?>> 
-	extends ABaseEntity implements IHistoryEntity<E>{
+public abstract class AHistoryEntity<E extends IBaseHistoryListEntity<?,I>,I> 
+	extends ABaseEntity<I> implements IHistoryEntity<E,I>{
 
-	private static final long serialVersionUID = 8050429770128500489L;
-		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7847290525422924551L;
+	
+	private IParseHistoryEntity<E> parseHistoryEntity;
+	
+	public AHistoryEntity(IParseHistoryEntity<E> parseHistoryEntity){
+		this.parseHistoryEntity = parseHistoryEntity;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	private E entity;
 	
 	@Column
 	private String historyEntity;
 	
+	@SuppressWarnings("unchecked")
 	public void prepareEntity() {
-		Gson gson = new Gson();
-		historyEntity = gson.toJson(entity.toDTO());
+		historyEntity = parseHistoryEntity.prepareHistory((E) this);
 	}
 }

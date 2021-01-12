@@ -4,7 +4,7 @@ import java.util.Date;
 
 import br.com.asv.model.entities.IBaseEntity;
 
-public interface IBaseHistoryEntity extends IBaseEntity{
+public interface IBaseHistoryEntity<I> extends IBaseEntity<I>{
 	
 	Date getLastModifiedAt();
 	
