@@ -56,12 +56,17 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
     
     @PersistenceContext
 	protected EntityManager entityManager;
+    
+    protected Class<E> clazzE;
 
     @Autowired
     @SuppressWarnings("unchecked")
 	public ABaseDao(R repository) {
         this.repository = repository;
         this.className	= ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName().toLowerCase();
+        if (clazzE == null) {
+			clazzE = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		}
     }   
     
     @Override
@@ -79,7 +84,7 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
     }
     
     @Override
-    public Collection<E> findAll(String collumnName) {
+    public Collection<E> findAllSort(String collumnName) {
         return StreamSupport.stream(getRepository().findAll(Sort.by(collumnName)).spliterator(), false).collect(Collectors.toList());
     }
 
@@ -90,12 +95,12 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
     
     @Override
 	public Collection<E> findAllByStatusEntity(StatusEntityEnum statusEntity) {
-		return getRepository().findAllByStatusEntityOrderById(statusEntity);
+		return getRepository().findAllByStatusEntityOrderByPid(statusEntity);
 	}
 
     @Override
     public Page<E> findAllByStatusEntity(Pageable pageable, StatusEntityEnum statusEntity) {
-        return getRepository().findAllByStatusEntityOrderById(statusEntity, pageable);
+        return getRepository().findAllByStatusEntityOrderByPid(statusEntity, pageable);
     }
 
     @Override
@@ -183,6 +188,11 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
         models.forEach(item -> recovery((I) item.getPid()));
     }
     
+    @Override
+    public List<E> findAll(String search) {
+    	return findCriteria(search, getClazzE());
+    }
+    
     private List<E> findCriteria(String search, Class<E> clazz) {
 		List<SearchCriteria> params = new ArrayList<>();
 		try {
@@ -247,5 +257,19 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
     public List<E> findAll(String search, Class<E> clazz) {
 		return findCriteria(search, clazz);
 	}
+    
+    @Override
+    public void remove(I pid) {
+        if (pid == null)
+            throw new ServiceException(getClassName() + strIdMissing);
+
+        E entity = getRepository().findById(pid).orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+        getRepository().delete(entity);
+    }
+    
+    @Override
+    public void remove(Collection<E> models) {
+        models.forEach(item -> remove((I) item.getPid()));
+    }
 
 }

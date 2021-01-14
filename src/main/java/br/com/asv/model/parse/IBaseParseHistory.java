@@ -1,6 +1,6 @@
 package br.com.asv.model.parse;
 
-public interface IParseHistoryEntity<E> {
+public interface IBaseParseHistory<E> {
 	
 	String prepareHistory(E entity);
 

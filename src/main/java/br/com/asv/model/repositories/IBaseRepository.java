@@ -18,9 +18,9 @@ import br.com.asv.model.enums.StatusEntityEnum;
 @NoRepositoryBean
 public interface IBaseRepository<E extends IBaseEntity<I>,I> extends JpaRepository<E, I>, JpaSpecificationExecutor<E>{
 
-	Collection<E> findAllByStatusEntityOrderById(StatusEntityEnum statusEntity);
+	Collection<E> findAllByStatusEntityOrderByPid(StatusEntityEnum statusEntity);
 
-    Page<E> findAllByStatusEntityOrderById(StatusEntityEnum statusEntity, Pageable pageable);
+    Page<E> findAllByStatusEntityOrderByPid(StatusEntityEnum statusEntity, Pageable pageable);
     
     List<E> findAll();
 }

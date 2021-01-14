@@ -31,9 +31,13 @@ public interface IBaseDao<E extends IBaseEntity<I>,I> {
 
 	void recovery(I pid);
 	void recovery(Collection<E> models);
-	Collection<E> findAll(String collumnName);
+	Collection<E> findAllSort(String collumnName);
 	
 	List<E> findAll(List<SearchCriteria> params, Class<E> clazz);
 	List<E> findAll(String search, Class<E> clazz);
+	List<E> findAll(String search);
+	
+	void remove(I pid);
+	void remove(Collection<E> models);
 	
 }

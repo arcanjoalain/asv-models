@@ -5,11 +5,11 @@ import com.google.gson.Gson;
 import br.com.asv.client.dto.IBaseDto;
 import br.com.asv.model.entities.IBaseEntity;
 
-public abstract class AParseHistoryEntity<E extends IBaseEntity<I>, D extends IBaseDto<I>, I> implements IParseHistoryEntity<E>{
+public abstract class ABaseParseHistory<E extends IBaseEntity<I>, D extends IBaseDto<I>, I> implements IBaseParseHistory<E>{
 	
-	private IParseEntity<E,D,I> parseEntity;
+	private IBaseParse<E,D,I> parseEntity;
 	
-	public AParseHistoryEntity(IParseEntity<E,D,I> parseEntity) {
+	public ABaseParseHistory(IBaseParse<E,D,I> parseEntity) {
 		this.parseEntity = parseEntity;
 	}
 
