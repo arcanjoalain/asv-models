@@ -27,6 +27,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+
 import br.com.asv.model.entities.IBaseEntity;
 import br.com.asv.model.entities.history.IBaseHistoryEntity;
 import br.com.asv.model.entities.history.IBaseHistoryListEntity;
@@ -42,158 +48,164 @@ import lombok.Setter;
 @Setter
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseRepository<E,I>,I> implements IBaseDao<E,I>{
-	
+public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseRepository<E, I>, I> implements IBaseDao<E, I> {
+
 	protected static final String STATUS_ENTITY = "statusEntity";
-	protected static final String strIdMissing= ".id.missing";
-	protected static final String strNotFound= ".not.found";
+	protected static final String strIdMissing = ".id.missing";
+	protected static final String strNotFound = ".not.found";
 
 	@Getter(AccessLevel.PROTECTED)
-    private		final	R			repository;
+	private final R repository;
 
-    @Getter(AccessLevel.PROTECTED)
-    private 	final	String		className;
-    
-    @PersistenceContext
+	@Getter(AccessLevel.PROTECTED)
+	private final String className;
+
+	@PersistenceContext
 	protected EntityManager entityManager;
-    
-    protected Class<E> clazzE;
 
-    @Autowired
-    @SuppressWarnings("unchecked")
+	private ObjectMapper objectMapper = new ObjectMapper();
+
+	protected Class<E> clazzE;
+
+	@Autowired
+	@SuppressWarnings("unchecked")
 	public ABaseDao(R repository) {
-        this.repository = repository;
-        this.className	= ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName().toLowerCase();
-        if (clazzE == null) {
+		this.repository = repository;
+		this.className = ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
+				.getActualTypeArguments()[0]).getSimpleName().toLowerCase();
+		if (clazzE == null) {
 			clazzE = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 		}
-    }   
-    
-    @Override
-    public E findOne(I id) {
-        if (id == null)
-            throw new ServiceException(getClassName() + strIdMissing);
+	}
 
-        return getRepository().findById(id)
-        		.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
-    }
+	@Override
+	public E findOne(I id) {
+		if (id == null)
+			throw new ServiceException(getClassName() + strIdMissing);
 
-    @Override
-    public Collection<E> findAll() {
-        return StreamSupport.stream(getRepository().findAll().spliterator(), false).collect(Collectors.toList());
-    }
-    
-    @Override
-    public Collection<E> findAllSort(String collumnName) {
-        return StreamSupport.stream(getRepository().findAll(Sort.by(collumnName)).spliterator(), false).collect(Collectors.toList());
-    }
+		return getRepository().findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+	}
 
-    @Override
-    public Page<E> findAll(Pageable pageable) {
-        return getRepository().findAll(pageable);
-    }
-    
-    @Override
+	@Override
+	public Collection<E> findAll() {
+		return StreamSupport.stream(getRepository().findAll().spliterator(), false).collect(Collectors.toList());
+	}
+
+	@Override
+	public Collection<E> findAllSort(String collumnName) {
+		return StreamSupport.stream(getRepository().findAll(Sort.by(collumnName)).spliterator(), false)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Page<E> findAll(Pageable pageable) {
+		return getRepository().findAll(pageable);
+	}
+
+	@Override
 	public Collection<E> findAllByStatusEntity(StatusEntityEnum statusEntity) {
 		return getRepository().findAllByStatusEntityOrderByPid(statusEntity);
 	}
 
-    @Override
-    public Page<E> findAllByStatusEntity(Pageable pageable, StatusEntityEnum statusEntity) {
-        return getRepository().findAllByStatusEntityOrderByPid(statusEntity, pageable);
-    }
-
-    @Override
-    @Transactional
-    public E save(E entity) {
-        entity = beforeSave(entity);
-        entity = getRepository().save(entity);
-        return afterSave(entity);
-
-    }
-
-    private E afterSave(E entity) {
-    	return entity;
-    }
-
-	protected E beforeSave(E entity){
-		if(entity instanceof IBaseHistoryEntity) {
-			System.out.println("save IBaseHistoryEntity");
-		}
-		
-		if(entity instanceof IBaseHistoryListEntity) {
-			System.out.println("save IBaseHistoryListEntity");
-		}
-    	return entity;
-    }
+	@Override
+	public Page<E> findAllByStatusEntity(Pageable pageable, StatusEntityEnum statusEntity) {
+		return getRepository().findAllByStatusEntityOrderByPid(statusEntity, pageable);
+	}
 
 	@Override
 	@Transactional
-    public E update(E entity) {
-        if (entity.getPid() == null)
-            throw new ServiceException(getClassName() + strIdMissing);
+	public E save(E entity) {
+		entity = beforeSave(entity);
+		entity = getRepository().save(entity);
+		return afterSave(entity);
 
-        entity = beforeUpdate(entity);
-        entity = getRepository().save(entity);
-        return afterUpdate(entity);
-    }
+	}
+
+	private E afterSave(E entity) {
+		return entity;
+	}
+
+	protected E beforeSave(E entity) {
+		if (entity instanceof IBaseHistoryEntity) {
+			System.out.println("save IBaseHistoryEntity");
+		}
+
+		if (entity instanceof IBaseHistoryListEntity) {
+			System.out.println("save IBaseHistoryListEntity");
+		}
+		return entity;
+	}
+
+	@Override
+	@Transactional
+	public E update(E entity) {
+		if (entity.getPid() == null)
+			throw new ServiceException(getClassName() + strIdMissing);
+
+		entity = beforeUpdate(entity);
+		entity = getRepository().save(entity);
+		return afterUpdate(entity);
+	}
 
 	protected E beforeUpdate(E entity) {
 //    	if(entity instanceof IBaseHistoryEntity) {
 //			System.out.println("Update IBaseHistoryEntity");
 //		}
-		
-    	if(entity instanceof IBaseHistoryListEntity) {
-			((IBaseHistoryListEntity<?,?>)entity).processHistories();
+
+		if (entity instanceof IBaseHistoryListEntity) {
+			((IBaseHistoryListEntity<?, ?>) entity).processHistories();
 		}
-    	return entity;
-    }
-    
-    protected E afterUpdate(E entity) {
-    	return entity;
-    }
+		return entity;
+	}
+
+	protected E afterUpdate(E entity) {
+		return entity;
+	}
 
 	@Override
-    public Collection<E> save(Collection<E> entitys) {
-        return StreamSupport.stream(getRepository().saveAll(entitys).spliterator(), false).collect(Collectors.toList());
-    }
+	public Collection<E> save(Collection<E> entitys) {
+		return StreamSupport.stream(getRepository().saveAll(entitys).spliterator(), false).collect(Collectors.toList());
+	}
 
-    @Override
-    public void delete(I pid) {
-        if (pid == null)
-            throw new ServiceException(getClassName() + strIdMissing);
+	@Override
+	public void delete(I pid) {
+		if (pid == null)
+			throw new ServiceException(getClassName() + strIdMissing);
 
-        E entity = getRepository().findById(pid).orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
-        entity.setStatusEntity(StatusEntityEnum.DISABLED);
-        getRepository().save(entity);
-    }
+		E entity = getRepository().findById(pid)
+				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+		entity.setStatusEntity(StatusEntityEnum.DISABLED);
+		getRepository().save(entity);
+	}
 
-    @Override
-    public void recovery(I pid) {
-        if (pid == null)
-            throw new ServiceException(getClassName() + strIdMissing);
+	@Override
+	public void recovery(I pid) {
+		if (pid == null)
+			throw new ServiceException(getClassName() + strIdMissing);
 
-        E entity = getRepository().findById(pid).orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
-        entity.setStatusEntity(StatusEntityEnum.ENABLED);
-        getRepository().save(entity);
-    }
+		E entity = getRepository().findById(pid)
+				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+		entity.setStatusEntity(StatusEntityEnum.ENABLED);
+		getRepository().save(entity);
+	}
 
-    @Override
-    public void delete(Collection<E> models) {
-        models.forEach(item -> delete((I) item.getPid()));
-    }
+	@Override
+	public void delete(Collection<E> models) {
+		models.forEach(item -> delete((I) item.getPid()));
+	}
 
-    @Override
-    public void recovery(Collection<E> models) {
-        models.forEach(item -> recovery((I) item.getPid()));
-    }
-    
-    @Override
-    public List<E> findAll(String search) {
-    	return findCriteria(search, getClazzE());
-    }
-    
-    private List<E> findCriteria(String search, Class<E> clazz) {
+	@Override
+	public void recovery(Collection<E> models) {
+		models.forEach(item -> recovery((I) item.getPid()));
+	}
+
+	@Override
+	public List<E> findAll(String search) {
+		return findCriteria(search, getClazzE());
+	}
+
+	private List<E> findCriteria(String search, Class<E> clazz) {
 		List<SearchCriteria> params = new ArrayList<>();
 		try {
 			if (clazz.getDeclaredConstructor().newInstance() instanceof IBaseEntity) {
@@ -205,7 +217,8 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 					}
 				}
 			}
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
 //			LogUtils.showError(e);
 		}
 		Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
@@ -218,8 +231,8 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 		}
 		return findAll(params, clazz);
 	}
-    
-    private void selectStatusEntity(Collection<SearchCriteria> params, MatchResult matcher, String p1, String p3) {
+
+	private void selectStatusEntity(Collection<SearchCriteria> params, MatchResult matcher, String p1, String p3) {
 		if (p1.contains(STATUS_ENTITY)) {
 			if (!"ALL".equals(p3)) {
 				params.add(new SearchCriteria(p1, matcher.group(2), StatusEntityEnum.valueOf(p3)));
@@ -234,9 +247,9 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 			}
 		}
 	}
-    
-    @Override
-    @Transactional
+
+	@Override
+	@Transactional
 	public List<E> findAll(List<SearchCriteria> params, Class<E> clazz) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<E> query = builder.createQuery(clazz);
@@ -251,25 +264,40 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 
 		return entityManager.createQuery(query).getResultList();
 	}
-    
-    @Override
-    @Transactional
-    public List<E> findAll(String search, Class<E> clazz) {
+
+	@Override
+	@Transactional
+	public List<E> findAll(String search, Class<E> clazz) {
 		return findCriteria(search, clazz);
 	}
-    
-    @Override
-    public void remove(I pid) {
-        if (pid == null)
-            throw new ServiceException(getClassName() + strIdMissing);
 
-        E entity = getRepository().findById(pid).orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
-        getRepository().delete(entity);
-    }
-    
-    @Override
-    public void remove(Collection<E> models) {
-        models.forEach(item -> remove((I) item.getPid()));
-    }
+	@Override
+	public void remove(I pid) {
+		if (pid == null)
+			throw new ServiceException(getClassName() + strIdMissing);
+
+		E entity = getRepository().findById(pid)
+				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+		getRepository().delete(entity);
+	}
+
+	@Override
+	public void remove(Collection<E> models) {
+		models.forEach(item -> remove((I) item.getPid()));
+	}
+
+	@Override
+	public E patch(I id, JsonPatch patch) throws JsonPatchException, JsonProcessingException {
+		E entity = findOne(id);
+		E patched = applyPatch(patch, entity);
+		save(patched);
+		return patched;
+
+	}
+
+	private E applyPatch(JsonPatch patch, E targetCustomer) throws JsonPatchException, JsonProcessingException {
+		JsonNode patched = patch.apply(objectMapper.convertValue(targetCustomer, JsonNode.class));
+		return objectMapper.treeToValue(patched, clazzE);
+	}
 
 }
