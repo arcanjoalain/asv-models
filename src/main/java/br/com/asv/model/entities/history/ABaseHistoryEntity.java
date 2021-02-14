@@ -23,10 +23,11 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class ABaseHistoryEntity<I> extends ABaseEntity<I> implements IBaseHistoryEntity<I>{
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 307432774643252223L;
+	private static final long serialVersionUID = 1L;
 
 	@LastModifiedDate
 	@Temporal(TemporalType.TIMESTAMP)

@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,6 +48,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Service
+@Controller
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseRepository<E, I>, I> implements IBaseDao<E, I> {
 
@@ -54,8 +56,9 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 	protected static final String strIdMissing = ".id.missing";
 	protected static final String strNotFound = ".not.found";
 
+	@Autowired
 	@Getter(AccessLevel.PROTECTED)
-	private final R repository;
+	private R repository;
 
 	@Getter(AccessLevel.PROTECTED)
 	private final String className;
@@ -67,10 +70,20 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 
 	protected Class<E> clazzE;
 
+//	@Autowired
+//	@SuppressWarnings("unchecked")
+//	public ABaseDao(R repository) {
+//		this.repository = repository;
+//		this.className = ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
+//				.getActualTypeArguments()[0]).getSimpleName().toLowerCase();
+//		if (clazzE == null) {
+//			clazzE = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+//		}
+//	}
+	
 	@Autowired
 	@SuppressWarnings("unchecked")
-	public ABaseDao(R repository) {
-		this.repository = repository;
+	public ABaseDao() {
 		this.className = ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
 				.getActualTypeArguments()[0]).getSimpleName().toLowerCase();
 		if (clazzE == null) {
@@ -107,10 +120,15 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 	public Collection<E> findAllByStatusEntity(StatusEntityEnum statusEntity) {
 		return getRepository().findAllByStatusEntityOrderByPid(statusEntity);
 	}
+	
+	@Override
+	public Collection<E> findAllByStatusEntitySortByPid(StatusEntityEnum statusEntity) {
+		return getRepository().findAllByStatusEntity(statusEntity, Sort.by("pid"));
+	}
 
 	@Override
-	public Page<E> findAllByStatusEntity(Pageable pageable, StatusEntityEnum statusEntity) {
-		return getRepository().findAllByStatusEntityOrderByPid(statusEntity, pageable);
+	public Collection<E> findAllByStatusEntity(StatusEntityEnum statusEntity, Sort sort) {
+		return getRepository().findAllByStatusEntity(statusEntity, sort);
 	}
 
 	@Override
@@ -127,14 +145,15 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 	}
 
 	protected E beforeSave(E entity) {
-		if (entity instanceof IBaseHistoryEntity) {
+		E result = entity;
+		if (result instanceof IBaseHistoryEntity) {
 			System.out.println("save IBaseHistoryEntity");
 		}
 
-		if (entity instanceof IBaseHistoryListEntity) {
-			System.out.println("save IBaseHistoryListEntity");
+		if (result instanceof IBaseHistoryListEntity) {
+			((IBaseHistoryListEntity<?, ?>) result).processHistories();
 		}
-		return entity;
+		return result;
 	}
 
 	@Override
@@ -149,14 +168,15 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 	}
 
 	protected E beforeUpdate(E entity) {
+		E result = entity;
 //    	if(entity instanceof IBaseHistoryEntity) {
 //			System.out.println("Update IBaseHistoryEntity");
 //		}
 
-		if (entity instanceof IBaseHistoryListEntity) {
-			((IBaseHistoryListEntity<?, ?>) entity).processHistories();
+		if (result instanceof IBaseHistoryListEntity) {
+			((IBaseHistoryListEntity<?, ?>) result).processHistories();
 		}
-		return entity;
+		return result;
 	}
 
 	protected E afterUpdate(E entity) {

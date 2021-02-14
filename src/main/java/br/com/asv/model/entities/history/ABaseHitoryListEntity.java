@@ -23,11 +23,12 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class ABaseHitoryListEntity<H extends IHistoryEntity<?,I>,I> 
 	extends ABaseHistoryEntity<I> implements IBaseHistoryListEntity<H,I>, Serializable{
-
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -675645969622939952L;
+	private static final long serialVersionUID = 1L;
+	
 	@Lob
 	@ElementCollection
     @OneToMany(mappedBy = "entity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})

@@ -20,12 +20,12 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AHistoryEntity<E extends IBaseHistoryListEntity<?,I>,I> 
 	extends ABaseEntity<I> implements IHistoryEntity<E,I>{
-
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7847290525422924551L;
-	
+	private static final long serialVersionUID = 1L;
+
 	private IBaseParseHistory<E> parseHistoryEntity;
 	
 	public AHistoryEntity(IBaseParseHistory<E> parseHistoryEntity){

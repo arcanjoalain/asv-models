@@ -5,8 +5,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -20,7 +19,7 @@ public interface IBaseRepository<E extends IBaseEntity<I>,I> extends JpaReposito
 
 	Collection<E> findAllByStatusEntityOrderByPid(StatusEntityEnum statusEntity);
 
-    Page<E> findAllByStatusEntityOrderByPid(StatusEntityEnum statusEntity, Pageable pageable);
+	Collection<E> findAllByStatusEntity(StatusEntityEnum statusEntity, Sort sort);
     
     List<E> findAll();
 }

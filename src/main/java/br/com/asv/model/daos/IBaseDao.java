@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -28,7 +29,8 @@ public interface IBaseDao<E extends IBaseEntity<I>,I> {
 	Page<E> findAll(Pageable pageable);
 
 	Collection<E> findAllByStatusEntity(StatusEntityEnum statusEntity);
-	Page<E> findAllByStatusEntity(Pageable pageable, StatusEntityEnum statusEntity);
+	Collection<E> findAllByStatusEntitySortByPid(StatusEntityEnum statusEntity);
+	Collection<E> findAllByStatusEntity(StatusEntityEnum statusEntity, Sort sort);
 
 	void delete(I pid);
 	void delete(Collection<E> models);

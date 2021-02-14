@@ -32,7 +32,10 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class ABaseEntity<I> implements IBaseEntity<I>, Serializable {
 
-	private static final long serialVersionUID = -7692821558073898783L;
+ 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 //	public ABaseEntity() {
 //		super();
@@ -64,6 +67,7 @@ public abstract class ABaseEntity<I> implements IBaseEntity<I>, Serializable {
 	
 	@PrePersist
 	public void prePersist() {
+		createdAt = new Date();
 	}
 
 	@PreUpdate
