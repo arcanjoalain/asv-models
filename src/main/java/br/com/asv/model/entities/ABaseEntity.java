@@ -22,7 +22,8 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import br.com.asv.model.enums.StatusEntityEnum;
+import br.com.asv.base.model.entities.IBaseEntity;
+import br.com.asv.base.model.enums.StatusEntityEnum;
 import lombok.Getter;
 import lombok.Setter;
 

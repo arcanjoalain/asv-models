@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import br.com.asv.model.entities.IBaseEntity;
-import br.com.asv.model.enums.StatusEntityEnum;
+import br.com.asv.base.model.entities.IBaseEntity;
+import br.com.asv.base.model.enums.StatusEntityEnum;
 
 @Transactional
 @NoRepositoryBean

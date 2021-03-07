@@ -9,8 +9,10 @@ import javax.persistence.MappedSuperclass;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
+import br.com.asv.base.model.entities.history.IHistoryEntity;
+import br.com.asv.base.model.parse.IBaseParseHistory;
 import br.com.asv.model.entities.ABaseEntity;
-import br.com.asv.model.parse.IBaseParseHistory;
 import lombok.Getter;
 import lombok.Setter;
 

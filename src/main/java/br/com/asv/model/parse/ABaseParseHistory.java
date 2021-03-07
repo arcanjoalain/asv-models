@@ -2,8 +2,11 @@ package br.com.asv.model.parse;
 
 import com.google.gson.Gson;
 
-import br.com.asv.client.dto.IBaseDto;
-import br.com.asv.model.entities.IBaseEntity;
+import br.com.asv.base.client.dto.IBaseDto;
+import br.com.asv.base.model.entities.IBaseEntity;
+import br.com.asv.base.model.parse.IBaseParse;
+import br.com.asv.base.model.parse.IBaseParseHistory;
+
 
 public abstract class ABaseParseHistory<E extends IBaseEntity<I>, D extends IBaseDto<I>, I> implements IBaseParseHistory<E>{
 	

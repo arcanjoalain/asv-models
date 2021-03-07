@@ -11,8 +11,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 
-import br.com.asv.model.entities.IBaseEntity;
-import br.com.asv.model.enums.StatusEntityEnum;
+import br.com.asv.base.model.entities.IBaseEntity;
+import br.com.asv.base.model.enums.StatusEntityEnum;
+
 
 
 

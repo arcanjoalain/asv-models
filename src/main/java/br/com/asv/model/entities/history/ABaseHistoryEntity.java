@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import br.com.asv.base.model.entities.history.IBaseHistoryEntity;
 import br.com.asv.model.entities.ABaseEntity;
 import lombok.Getter;
 import lombok.Setter;

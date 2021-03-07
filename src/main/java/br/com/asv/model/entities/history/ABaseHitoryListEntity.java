@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
+import br.com.asv.base.model.entities.history.IHistoryEntity;
 import lombok.Getter;
 import lombok.Setter;
 

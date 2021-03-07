@@ -34,10 +34,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 
-import br.com.asv.model.entities.IBaseEntity;
-import br.com.asv.model.entities.history.IBaseHistoryEntity;
-import br.com.asv.model.entities.history.IBaseHistoryListEntity;
-import br.com.asv.model.enums.StatusEntityEnum;
+import br.com.asv.base.model.entities.IBaseEntity;
+import br.com.asv.base.model.entities.history.IBaseHistoryEntity;
+import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
+import br.com.asv.base.model.enums.StatusEntityEnum;
 import br.com.asv.model.exceptions.ObjectNotFoundException;
 import br.com.asv.model.exceptions.ServiceException;
 import br.com.asv.model.repositories.IBaseRepository;
@@ -146,11 +146,11 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 
 	protected E beforeSave(E entity) {
 		E result = entity;
-		if (result instanceof IBaseHistoryEntity) {
+		if (result instanceof IBaseHistoryEntity<?>) {
 			System.out.println("save IBaseHistoryEntity");
 		}
 
-		if (result instanceof IBaseHistoryListEntity) {
+		if (result instanceof IBaseHistoryListEntity<?, ?>) {
 			((IBaseHistoryListEntity<?, ?>) result).processHistories();
 		}
 		return result;
