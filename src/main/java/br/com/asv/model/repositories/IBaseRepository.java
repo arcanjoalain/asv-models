@@ -5,8 +5,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -16,11 +15,11 @@ import br.com.asv.model.enums.StatusEntityEnum;
 
 @Transactional
 @NoRepositoryBean
-public interface IBaseRepository<E extends IBaseEntity> extends JpaRepository<E, Long>, JpaSpecificationExecutor<E>{
+public interface IBaseRepository<E extends IBaseEntity<I>,I> extends JpaRepository<E, I>, JpaSpecificationExecutor<E>{
 
-	Collection<E> findAllByStatusEntityOrderById(StatusEntityEnum statusEntity);
+	Collection<E> findAllByStatusEntityOrderByPid(StatusEntityEnum statusEntity);
 
-    Page<E> findAllByStatusEntityOrderById(StatusEntityEnum statusEntity, Pageable pageable);
+	Collection<E> findAllByStatusEntity(StatusEntityEnum statusEntity, Sort sort);
     
     List<E> findAll();
 }

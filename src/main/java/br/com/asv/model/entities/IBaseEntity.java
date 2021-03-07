@@ -6,23 +6,24 @@ import javax.persistence.EntityListeners;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import br.com.asv.model.dtos.IBaseDto;
 import br.com.asv.model.enums.StatusEntityEnum;
 
+
+
 @EntityListeners(AuditingEntityListener.class)
-public interface IBaseEntity {
+public interface IBaseEntity<I> {
 	
-	Long getId();
+	I getPid();
 	
-	void setId(Long id);
+	void setPid(I pid);
 	
-	Date getDateAt();
+	Date getCreatedAt();
 	
-	void setDateAt(Date dateAt);
+	void setCreatedAt(Date dateAt);
 		
-	Long getCreateUserID();
+	Long getCreateUserPid();
 	
-	void setCreateUserID(Long createUserID);
+	void setCreateUserPid(Long createUserPid);
 		
 	StatusEntityEnum getStatusEntity();
 	
@@ -42,8 +43,4 @@ public interface IBaseEntity {
 	
 	void preUpdate();
 	
-	IBaseDto toDTO();
-	
-	IBaseDto toDTO(Boolean isFull);
-
 }
