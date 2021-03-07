@@ -34,6 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 
+import br.com.asv.base.model.daos.IBasePatchDao;
+import br.com.asv.base.model.daos.ISearchCriteria;
 import br.com.asv.base.model.entities.IBaseEntity;
 import br.com.asv.base.model.entities.history.IBaseHistoryEntity;
 import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
@@ -50,7 +52,7 @@ import lombok.Setter;
 @Service
 @Controller
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseRepository<E, I>, I> implements IBaseDao<E, I> {
+public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseRepository<E, I>, I> implements IBasePatchDao<E, I> {
 
 	protected static final String STATUS_ENTITY = "statusEntity";
 	protected static final String strIdMissing = ".id.missing";
@@ -226,7 +228,7 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 	}
 
 	private List<E> findCriteria(String search, Class<E> clazz) {
-		List<SearchCriteria> params = new ArrayList<>();
+		List<ISearchCriteria> params = new ArrayList<>();
 		try {
 			if (clazz.getDeclaredConstructor().newInstance() instanceof IBaseEntity) {
 				if (search == null) {
@@ -252,7 +254,7 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 		return findAll(params, clazz);
 	}
 
-	private void selectStatusEntity(Collection<SearchCriteria> params, MatchResult matcher, String p1, String p3) {
+	private void selectStatusEntity(Collection<ISearchCriteria> params, MatchResult matcher, String p1, String p3) {
 		if (p1.contains(STATUS_ENTITY)) {
 			if (!"ALL".equals(p3)) {
 				params.add(new SearchCriteria(p1, matcher.group(2), StatusEntityEnum.valueOf(p3)));
@@ -270,7 +272,7 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 
 	@Override
 	@Transactional
-	public List<E> findAll(List<SearchCriteria> params, Class<E> clazz) {
+	public List<E> findAll(List<ISearchCriteria> params, Class<E> clazz) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<E> query = builder.createQuery(clazz);
 		Root<E> r = query.from(clazz);

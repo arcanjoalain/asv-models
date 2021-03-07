@@ -6,7 +6,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-public class SearchQueryCriteriaConsumer implements Consumer<SearchCriteria>{
+import br.com.asv.base.model.daos.ISearchCriteria;
+
+
+public class SearchQueryCriteriaConsumer implements Consumer<ISearchCriteria>{
 	 
     private Predicate predicate;
     private CriteriaBuilder builder;
@@ -41,6 +44,15 @@ public class SearchQueryCriteriaConsumer implements Consumer<SearchCriteria>{
     public Predicate getPredicate() {
         return predicate;
     }
+
+
+	@Override
+	public void accept(ISearchCriteria t) {
+		// TODO Auto-generated method stub
+	}
+
+
+	
 
 }
 
