@@ -63,7 +63,7 @@ public abstract class ABaseEntity<I> implements IBaseEntity<I>, Serializable {
 
 	@CreatedBy
 	@Column(name = "create_user_pid")
-	private Long createUserPid;
+	private I createUserPid;
 
 	
 	@PrePersist
