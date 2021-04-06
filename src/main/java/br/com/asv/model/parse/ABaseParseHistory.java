@@ -8,16 +8,16 @@ import br.com.asv.base.model.parse.IBaseParse;
 import br.com.asv.base.model.parse.IBaseParseHistory;
 
 
-public abstract class ABaseParseHistory<E extends IBaseEntity<I>, D extends IBaseDto<I>, I> implements IBaseParseHistory<E>{
+public abstract class ABaseParseHistory<E extends IBaseEntity<I>, D extends IBaseDto<O>, I, O> implements IBaseParseHistory<E>{
 	
-	private IBaseParse<E,D,I> parseEntity;
+	private IBaseParse<E,D,I,O> parseEntity;
 	
-	public ABaseParseHistory(IBaseParse<E,D,I> parseEntity) {
+	public ABaseParseHistory(IBaseParse<E,D,I,O> parseEntity) {
 		this.parseEntity = parseEntity;
 	}
 
 	public String prepareHistory(E entity) {
 		Gson gson = new Gson();
-		return gson.toJson(parseEntity.toDTO(entity));
+		return gson.toJson(parseEntity.convert(entity));
 	}
 }

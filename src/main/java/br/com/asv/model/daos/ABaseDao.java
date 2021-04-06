@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
@@ -51,8 +52,12 @@ import lombok.Setter;
 @Setter
 @Service
 @Controller
+@Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseRepository<E, I>, I> implements IBasePatchDao<E, I> {
+public abstract class ABaseDao<
+	E extends IBaseEntity<I>, 
+	I> 
+		implements IBasePatchDao<E, I> {
 
 	protected static final String STATUS_ENTITY = "statusEntity";
 	protected static final String strIdMissing = ".id.missing";
@@ -60,7 +65,7 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 
 	@Autowired
 	@Getter(AccessLevel.PROTECTED)
-	private R repository;
+	private IBaseRepository<E, I> repository;
 
 	@Getter(AccessLevel.PROTECTED)
 	private final String className;
@@ -241,6 +246,7 @@ public abstract class ABaseDao<E extends IBaseEntity<I>, R extends IBaseReposito
 			}
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
 //			LogUtils.showError(e);
 		}
 		Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");

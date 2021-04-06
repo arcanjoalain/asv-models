@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class ABaseHitoryListEntity<H extends IHistoryEntity<?,I>,I> 
+public abstract class ABaseHitoryListEntity<H extends IHistoryEntity<H,I>,I> 
 	extends ABaseHistoryEntity<I> implements IBaseHistoryListEntity<H,I>, Serializable{
 	
 	/**
