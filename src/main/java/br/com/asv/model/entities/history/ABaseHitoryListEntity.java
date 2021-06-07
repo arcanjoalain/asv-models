@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class ABaseHitoryListEntity<H extends IHistoryEntity<H,I>,I> 
+public abstract class ABaseHitoryListEntity<H extends IHistoryEntity<H,I>,I extends Serializable> 
 	extends ABaseHistoryEntity<I> implements IBaseHistoryListEntity<H,I>, Serializable{
 	
 	/**
@@ -34,7 +34,7 @@ public abstract class ABaseHitoryListEntity<H extends IHistoryEntity<H,I>,I>
 	@Lob
 	@ElementCollection
     @OneToMany(mappedBy = "entity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-	protected List<H> histories = new LinkedList<>();	
+	private List<H> histories = new LinkedList<>();	
 	
 	
 	@Override

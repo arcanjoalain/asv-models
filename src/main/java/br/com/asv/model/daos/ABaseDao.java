@@ -1,5 +1,6 @@
 package br.com.asv.model.daos;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -38,7 +41,6 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import br.com.asv.base.model.daos.IBasePatchDao;
 import br.com.asv.base.model.daos.ISearchCriteria;
 import br.com.asv.base.model.entities.IBaseEntity;
-import br.com.asv.base.model.entities.history.IBaseHistoryEntity;
 import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
 import br.com.asv.base.model.enums.StatusEntityEnum;
 import br.com.asv.model.exceptions.ObjectNotFoundException;
@@ -56,12 +58,14 @@ import lombok.Setter;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public abstract class ABaseDao<
 	E extends IBaseEntity<I>, 
-	I> 
+	I extends Serializable> 
 		implements IBasePatchDao<E, I> {
 
 	protected static final String STATUS_ENTITY = "statusEntity";
-	protected static final String strIdMissing = ".id.missing";
-	protected static final String strNotFound = ".not.found";
+	protected static final String STR_ID_MISSING = ".id.missing";
+	protected static final String STR_NOT_FOUND = ".not.found";
+	
+	private static final Logger LOGGER = LogManager.getLogger(ABaseDao.class);
 
 	@Autowired
 	@Getter(AccessLevel.PROTECTED)
@@ -77,17 +81,6 @@ public abstract class ABaseDao<
 
 	protected Class<E> clazzE;
 
-//	@Autowired
-//	@SuppressWarnings("unchecked")
-//	public ABaseDao(R repository) {
-//		this.repository = repository;
-//		this.className = ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
-//				.getActualTypeArguments()[0]).getSimpleName().toLowerCase();
-//		if (clazzE == null) {
-//			clazzE = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-//		}
-//	}
-	
 	@Autowired
 	@SuppressWarnings("unchecked")
 	public ABaseDao() {
@@ -101,10 +94,10 @@ public abstract class ABaseDao<
 	@Override
 	public E findOne(I id) {
 		if (id == null)
-			throw new ServiceException(getClassName() + strIdMissing);
+			throw new ServiceException(getClassName() + STR_ID_MISSING);
 
 		return getRepository().findById(id)
-				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + STR_NOT_FOUND));
 	}
 
 	@Override
@@ -141,6 +134,7 @@ public abstract class ABaseDao<
 	@Override
 	@Transactional
 	public E save(E entity) {
+		System.out.println("Dao SAVE");
 		entity = beforeSave(entity);
 		entity = getRepository().save(entity);
 		return afterSave(entity);
@@ -152,22 +146,14 @@ public abstract class ABaseDao<
 	}
 
 	protected E beforeSave(E entity) {
-		E result = entity;
-		if (result instanceof IBaseHistoryEntity<?>) {
-			System.out.println("save IBaseHistoryEntity");
-		}
-
-		if (result instanceof IBaseHistoryListEntity<?, ?>) {
-			((IBaseHistoryListEntity<?, ?>) result).processHistories();
-		}
-		return result;
+		return entity;
 	}
 
 	@Override
 	@Transactional
 	public E update(E entity) {
 		if (entity.getPid() == null)
-			throw new ServiceException(getClassName() + strIdMissing);
+			throw new ServiceException(getClassName() + STR_ID_MISSING);
 
 		entity = beforeUpdate(entity);
 		entity = getRepository().save(entity);
@@ -176,10 +162,6 @@ public abstract class ABaseDao<
 
 	protected E beforeUpdate(E entity) {
 		E result = entity;
-//    	if(entity instanceof IBaseHistoryEntity) {
-//			System.out.println("Update IBaseHistoryEntity");
-//		}
-
 		if (result instanceof IBaseHistoryListEntity) {
 			((IBaseHistoryListEntity<?, ?>) result).processHistories();
 		}
@@ -198,10 +180,10 @@ public abstract class ABaseDao<
 	@Override
 	public void delete(I pid) {
 		if (pid == null)
-			throw new ServiceException(getClassName() + strIdMissing);
+			throw new ServiceException(getClassName() + STR_ID_MISSING);
 
 		E entity = getRepository().findById(pid)
-				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + STR_NOT_FOUND));
 		entity.setStatusEntity(StatusEntityEnum.DISABLED);
 		getRepository().save(entity);
 	}
@@ -209,22 +191,22 @@ public abstract class ABaseDao<
 	@Override
 	public void recovery(I pid) {
 		if (pid == null)
-			throw new ServiceException(getClassName() + strIdMissing);
+			throw new ServiceException(getClassName() + STR_ID_MISSING);
 
 		E entity = getRepository().findById(pid)
-				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + STR_NOT_FOUND));
 		entity.setStatusEntity(StatusEntityEnum.ENABLED);
 		getRepository().save(entity);
 	}
 
 	@Override
 	public void delete(Collection<E> models) {
-		models.forEach(item -> delete((I) item.getPid()));
+		models.forEach(item -> delete(item.getPid()));
 	}
 
 	@Override
 	public void recovery(Collection<E> models) {
-		models.forEach(item -> recovery((I) item.getPid()));
+		models.forEach(item -> recovery(item.getPid()));
 	}
 
 	@Override
@@ -246,8 +228,8 @@ public abstract class ABaseDao<
 			}
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
-//			LogUtils.showError(e);
+			LOGGER.error(e.getMessage());
+			
 		}
 		Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
 		Matcher matcher = pattern.matcher(search + ",");
@@ -302,19 +284,20 @@ public abstract class ABaseDao<
 	@Override
 	public void remove(I pid) {
 		if (pid == null)
-			throw new ServiceException(getClassName() + strIdMissing);
+			throw new ServiceException(getClassName() + STR_ID_MISSING);
 
 		E entity = getRepository().findById(pid)
-				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + strNotFound));
+				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + STR_NOT_FOUND));
 		getRepository().delete(entity);
 	}
 
 	@Override
 	public void remove(Collection<E> models) {
-		models.forEach(item -> remove((I) item.getPid()));
+		models.forEach(item -> remove(item.getPid()));
 	}
 
 	@Override
+	@Transactional
 	public E patch(I id, JsonPatch patch) throws JsonPatchException, JsonProcessingException {
 		E entity = findOne(id);
 		E patched = applyPatch(patch, entity);

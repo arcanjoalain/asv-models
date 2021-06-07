@@ -31,26 +31,12 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class ABaseEntity<I> implements IBaseEntity<I>, Serializable {
+public abstract class ABaseEntity<I extends Serializable> implements IBaseEntity<I>, Serializable {
 
  	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-//	public ABaseEntity() {
-//		super();
-//	}
-//
-//	public ABaseEntity(IBaseDto dto) {
-//		super();
-//		id = dto.getPid();
-//	}
-//
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_GENERATOR")
-//	@Column(name = "id", updatable = false)
-//	protected Long id;
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "status_entity")

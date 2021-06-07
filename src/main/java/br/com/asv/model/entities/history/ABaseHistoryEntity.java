@@ -1,5 +1,6 @@
 package br.com.asv.model.entities.history;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class ABaseHistoryEntity<I> extends ABaseEntity<I> implements IBaseHistoryEntity<I>{
+public abstract class ABaseHistoryEntity<I extends Serializable> extends ABaseEntity<I> implements IBaseHistoryEntity<I>{
 
 
 	/**

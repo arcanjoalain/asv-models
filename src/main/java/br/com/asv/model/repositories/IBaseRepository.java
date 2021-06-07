@@ -1,5 +1,6 @@
 package br.com.asv.model.repositories;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import br.com.asv.base.model.enums.StatusEntityEnum;
 
 @Transactional
 @NoRepositoryBean
-public interface IBaseRepository<E extends IBaseEntity<I>,I> extends JpaRepository<E, I>, JpaSpecificationExecutor<E>{
+public interface IBaseRepository<E extends IBaseEntity<I>,I extends Serializable> extends JpaRepository<E, I>, JpaSpecificationExecutor<E>{
 
 	Collection<E> findAllByStatusEntityOrderByPid(StatusEntityEnum statusEntity);
 

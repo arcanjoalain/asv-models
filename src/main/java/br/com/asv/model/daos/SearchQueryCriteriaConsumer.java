@@ -6,10 +6,15 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import br.com.asv.base.model.daos.ISearchCriteria;
 
 
 public class SearchQueryCriteriaConsumer implements Consumer<ISearchCriteria>{
+	
+	private static final Logger LOGGER = LogManager.getLogger(SearchQueryCriteriaConsumer.class);
 	 
     private Predicate predicate;
     private CriteriaBuilder builder;
@@ -48,7 +53,7 @@ public class SearchQueryCriteriaConsumer implements Consumer<ISearchCriteria>{
 
 	@Override
 	public void accept(ISearchCriteria t) {
-		// TODO Auto-generated method stub
+		LOGGER.info(t);
 	}
 
 

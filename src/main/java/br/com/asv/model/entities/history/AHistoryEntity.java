@@ -1,6 +1,8 @@
 package br.com.asv.model.entities.history;
 
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -20,7 +22,7 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AHistoryEntity<E extends IBaseHistoryListEntity<?,I>,I> 
+public abstract class AHistoryEntity<E extends IBaseHistoryListEntity<?,I>,I extends Serializable> 
 	extends ABaseEntity<I> implements IHistoryEntity<E,I>{
 	
 	/**

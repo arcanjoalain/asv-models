@@ -1,5 +1,7 @@
 package br.com.asv.model.parse;
 
+import java.io.Serializable;
+
 import com.google.gson.Gson;
 
 import br.com.asv.base.client.dto.IBaseDto;
@@ -8,7 +10,16 @@ import br.com.asv.base.model.parse.IBaseParse;
 import br.com.asv.base.model.parse.IBaseParseHistory;
 
 
-public abstract class ABaseParseHistory<E extends IBaseEntity<I>, D extends IBaseDto<O>, I, O> implements IBaseParseHistory<E>{
+public abstract class ABaseParseHistory<
+	E extends IBaseEntity<I>, 
+	D extends IBaseDto<O>, 
+	I extends Serializable, 
+	O extends Serializable> implements IBaseParseHistory<E>{
+		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	private IBaseParse<E,D,I,O> parseEntity;
 	
