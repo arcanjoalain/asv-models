@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>models</artifactId>
-	<version>0.1.37</version>
+	<version>0.1.38</version>
 	<name>asv-models</name>
 	<description>Asv Model Lib</description>
 
@@ -18,15 +18,9 @@
 		<dependency>
 			<groupId>br.com.asv</groupId>
 			<artifactId>base</artifactId>
-			<version>0.1.19</version>
+			<version>0.1.20</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>com.github.java-json-tools</groupId>
-			<artifactId>json-patch</artifactId>
-			<version>1.12</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
