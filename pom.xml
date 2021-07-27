@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>models</artifactId>
-	<version>0.1.38</version>
+	<version>0.1.41</version>
 	<name>asv-models</name>
 	<description>Asv Model Lib</description>
 
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>br.com.asv</groupId>
 			<artifactId>base</artifactId>
-			<version>0.1.20</version>
+			<version>0.1.23</version>
 		</dependency>
 		
 		<dependency>

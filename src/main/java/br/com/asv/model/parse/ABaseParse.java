@@ -59,18 +59,38 @@ public abstract class ABaseParse<E extends IBaseEntity<I>, D extends IBaseDto<O>
 		return mask;
 	}
 
-	public final List<E> covertEntities(List<D> dtos) {
+	@Override
+	public List<E> convertEntities(List<D> dtos) {
 		List<E> result = null;
 		if (dtos != null) {
 			result = dtos.stream().map(tempObj -> convert(tempObj)).collect(Collectors.toList());
 		}
 		return result;
 	}
+	
+	@Override
+	public List<E> convertEntities(List<D> dtos, boolean isFull) {
+		List<E> result = null;
+		if (dtos != null) {
+			result = dtos.stream().map(tempObj -> convert(tempObj,isFull)).collect(Collectors.toList());
+		}
+		return result;
+	}
 
-	public List<D> covertDtos(List<E> dtos) {
+	@Override
+	public List<D> convertDtos(List<E> dtos) {
 		List<D> result = null;
 		if (dtos != null) {
 			result = dtos.stream().map(tempObj -> convert(tempObj)).collect(Collectors.toList());
+		}
+		return result;
+	}
+	
+	@Override
+	public List<D> convertDtos(List<E> dtos, boolean isFull) {
+		List<D> result = null;
+		if (dtos != null) {
+			result = dtos.stream().map(tempObj -> convert(tempObj,isFull)).collect(Collectors.toList());
 		}
 		return result;
 	}
