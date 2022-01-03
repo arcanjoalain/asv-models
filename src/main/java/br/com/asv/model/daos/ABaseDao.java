@@ -95,7 +95,6 @@ public abstract class ABaseDao<
 	public E findOne(I id) {
 		if (id == null)
 			throw new ServiceException(getClassName() + STR_ID_MISSING);
-
 		return getRepository().findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException(getClassName() + STR_NOT_FOUND));
 	}

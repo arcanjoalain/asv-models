@@ -3,7 +3,6 @@ package br.com.asv.model.daos;
 import br.com.asv.base.model.daos.ISearchCriteria;
 import lombok.Getter;
 import lombok.Setter;
-
 @Getter
 @Setter
 public class SearchCriteria implements ISearchCriteria {
@@ -22,6 +21,7 @@ public class SearchCriteria implements ISearchCriteria {
         this.operation = operation;
         this.value = value;
     }
+
 
 }
 
