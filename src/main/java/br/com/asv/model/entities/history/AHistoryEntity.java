@@ -3,11 +3,7 @@ package br.com.asv.model.entities.history;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -15,6 +11,11 @@ import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
 import br.com.asv.base.model.entities.history.IHistoryEntity;
 import br.com.asv.base.model.parse.IBaseParseHistory;
 import br.com.asv.model.entities.ABaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -3,11 +3,7 @@ package br.com.asv.model.entities.history;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
 
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,6 +11,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import br.com.asv.base.model.entities.history.IBaseHistoryEntity;
 import br.com.asv.model.entities.ABaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 

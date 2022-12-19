@@ -12,13 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,6 +40,13 @@ import br.com.asv.base.model.enums.StatusEntityEnum;
 import br.com.asv.model.exceptions.ObjectNotFoundException;
 import br.com.asv.model.exceptions.ServiceException;
 import br.com.asv.model.repositories.IBaseRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -81,7 +82,6 @@ public abstract class ABaseDao<
 
 	protected Class<E> clazzE;
 
-	@Autowired
 	@SuppressWarnings("unchecked")
 	public ABaseDao() {
 		this.className = ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())

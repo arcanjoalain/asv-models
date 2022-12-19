@@ -2,14 +2,16 @@ package br.com.asv.model.daos;
 
 import java.util.function.Consumer;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import br.com.asv.base.model.daos.ISearchCriteria;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 
 public class SearchQueryCriteriaConsumer implements Consumer<ISearchCriteria>{

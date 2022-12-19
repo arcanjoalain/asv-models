@@ -4,18 +4,19 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
+
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
 import br.com.asv.base.model.entities.history.IHistoryEntity;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
