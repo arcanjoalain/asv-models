@@ -6,16 +6,16 @@
 	<parent>
 		<groupId>br.com.asv</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.2.0</version>
+		<version>0.2.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>models</artifactId>
-	<version>0.2.00</version>
+	<version>0.2.01</version>
 	<name>asv-models</name>
 	<description>Asv Model Lib</description>
 
 	<properties>
-		<asv.base.version>0.2.00</asv.base.version>
+		<asv.base.version>0.2.01</asv.base.version>
 	</properties>
 
 	<dependencies>
